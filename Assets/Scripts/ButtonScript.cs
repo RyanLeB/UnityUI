@@ -26,15 +26,18 @@ public class ButtonScript : MonoBehaviour
     public Slider green;
     public Slider alpha;
 
-
-
+    [Header("Progress Bar")]
+    public Slider progress;
+    public TMP_Text percentageText;
 
     private void Awake()
     {
+        // score count updates upon awake
         scoreCount.text = currentScore.ToString();
         
     }
 
+    // edit color slider
     public void SliderEdit()
     {
         Color color = rupeeImage.color;
@@ -51,15 +54,29 @@ public class ButtonScript : MonoBehaviour
         color.a = normalizedAlpha;
             
 
-            rupeeImage.color = color;
+        rupeeImage.color = color;
             
+    }
 
             
         
+
+
+    // progress bar
+    public void ChangeProgressBar(float value)
+    {
+        progress.value += value;
+        UpdatePercentageText();
+    }
+
+    public void UpdatePercentageText()
+    {
+        float percentage = (progress.value / progress.maxValue) * 100f;
+        percentageText.text = $"Progress: {percentage:F2}%";
     }
 
 
-
+    // hide/show image
     public void hideKey()
     {
         keyImage.gameObject.SetActive(false);
@@ -74,6 +91,8 @@ public class ButtonScript : MonoBehaviour
         showButton.gameObject.SetActive(false);
     }
 
+    
+    // update score
     public void ScoreUpdater(int value)
     {
 
@@ -99,13 +118,16 @@ public class ButtonScript : MonoBehaviour
         // Debug.Log(currentScore);
     }
 
-
+    // random value for score
     public void RandomButton()
     {
         int randomScore = Random.Range(minRandomScore, maxRandomScore + 1);
         ScoreUpdater(randomScore);
     }
             
+    
+    
+    // Exit game
     public void ExitGame()
     {
         Application.Quit();
