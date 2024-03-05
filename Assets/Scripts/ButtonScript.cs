@@ -30,11 +30,54 @@ public class ButtonScript : MonoBehaviour
     public Slider progress;
     public TMP_Text percentageText;
 
+
+    [Header("Radial Cooldown")]
+    public Image cooldownImage; 
+    public float cooldownTime = 3f; 
+    private bool isCooldown = false;
+
     private void Awake()
     {
-        // score count updates upon awake
-        scoreCount.text = currentScore.ToString();
         
+        scoreCount.text = currentScore.ToString();
+        cooldownImage.gameObject.SetActive(false);
+
+    }
+
+    // activates when button is pressed next to cooldown
+    public void OnCooldownButtonPress()
+    {
+        if (!isCooldown) 
+        {
+            cooldownImage.gameObject.SetActive(true);
+            StartCooldown();
+
+        }
+    }
+
+    // starts cooldown
+    private void StartCooldown()
+    {
+        isCooldown = true; 
+        cooldownImage.fillAmount = 1f; 
+
+        
+        InvokeRepeating("ReduceFillAmount", 0f, cooldownTime / 100);
+    }
+
+    // gradually reduces fill amount
+    private void ReduceFillAmount()
+    {
+        cooldownImage.fillAmount -= Time.deltaTime / cooldownTime; 
+
+        
+        if (cooldownImage.fillAmount <= 0)
+        {
+            cooldownImage.fillAmount = 0f; 
+            cooldownImage.gameObject.SetActive(false); 
+            isCooldown = false; 
+            CancelInvoke("ReduceFillAmount"); 
+        }
     }
 
     // edit color slider
